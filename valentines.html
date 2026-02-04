@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💝 A Special Question 💝</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        h1 {
+            color: #e91e63;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .question {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .yes-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .no-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        .success-message {
+            display: none;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .success-message h2 {
+            color: #e91e63;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .success-message p {
+            font-size: 1.3em;
+            color: #555;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .heart {
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(1.1);
+            }
+            50% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-10px);
+            }
+            75% {
+                transform: translateX(10px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="question-section">
+            <div class="heart">💖</div>
+            <h1>A Special Question...</h1>
+            <p class="question">Will you be my Valentine? 💝</p>
+            <div class="buttons">
+                <button class="yes-btn" onclick="handleResponse(true)">Yes! 💕</button>
+                <button class="no-btn" onclick="handleResponse(false)">No 😔</button>
+            </div>
+        </div>
+
+        <div id="joke-section" class="success-message">
+            <div class="heart">😂</div>
+            <h2>Sorry, it's not an option! 😂🤣</h2>
+            <p id="countdown-text" style="font-size: 1.5em; color: #e91e63; margin-top: 30px; font-weight: bold;">
+                You better click YES before the countdown ends otherwise 🔪
+            </p>
+            <p id="countdown-number" style="font-size: 4em; color: #f5576c; font-weight: bold; margin-top: 20px;">10</p>
+            <button class="yes-btn" onclick="showSuccess()" style="margin-top: 30px;">YES! 💕</button>
+        </div>
+
+        <div id="auto-accept-section" class="success-message">
+            <div class="heart">😂</div>
+            <h2>Told yah that you don't have an option! 😂🤣</h2>
+            <p style="font-size: 1.3em; margin-top: 20px;">We have clicked YES for you 💕😘❤️</p>
+        </div>
+
+        <div id="success-section" class="success-message">
+            <div class="heart">❤️</div>
+            <h2>Yay! 🎉</h2>
+            <p>Tell your boyfriend how much you love him! 💖</p>
+        </div>
+    </div>
+
+    <script>
+        let countdownInterval;
+
+        function handleResponse(isYes) {
+            if (isYes) {
+                // If YES is clicked, go straight to success
+                showSuccess();
+            } else {
+                // If NO is clicked, show the joke section
+                document.getElementById('question-section').style.display = 'none';
+                document.getElementById('joke-section').classList.add('active');
+                startCountdown();
+            }
+        }
+
+        function startCountdown() {
+            let count = 10;
+            const countdownElement = document.getElementById('countdown-number');
+            
+            countdownInterval = setInterval(() => {
+                count--;
+                countdownElement.textContent = count;
+                
+                // Make the countdown more dramatic as it gets lower
+                if (count <= 3) {
+                    countdownElement.style.color = '#ff0000';
+                    countdownElement.style.animation = 'shake 0.5s infinite';
+                }
+                
+                if (count <= 0) {
+                    clearInterval(countdownInterval);
+                    // Show auto-accept message if countdown reaches 0
+                    showAutoAccept();
+                }
+            }, 1000);
+        }
+
+        function showAutoAccept() {
+            // Hide joke section
+            document.getElementById('joke-section').classList.remove('active');
+            
+            // Show auto-accept message
+            document.getElementById('auto-accept-section').classList.add('active');
+            
+            // Wait 3 seconds, then show final success message
+            setTimeout(() => {
+                showSuccess();
+            }, 3000);
+        }
+
+        function showSuccess() {
+            // Clear countdown if it's running
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            // Hide all other sections
+            document.getElementById('question-section').style.display = 'none';
+            document.getElementById('joke-section').classList.remove('active');
+            document.getElementById('auto-accept-section').classList.remove('active');
+            
+            // Show success message
+            document.getElementById('success-section').classList.add('active');
+            
+            // Create confetti
+            createConfetti();
+        }
+
+        function createConfetti() {
+            const colors = ['#f093fb', '#f5576c', '#4facfe', '#00f2fe', '#ffd700', '#ff69b4', '#ff1493'];
+            const container = document.querySelector('.container');
+            
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 30);
+            }
+        }
+    </script>
+</body>
+</html>
